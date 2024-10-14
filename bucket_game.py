@@ -48,7 +48,7 @@ def minimax_search(game: Game, state: State) -> Action | None:
     value, move = max_value(game, state)
     return move
 
-def max_value(game: Game, state: State) -> tuple[float, str | None]:
+def max_value(game: Game, state: State) -> tuple[float, float | None]:
     if (game.is_terminal(state)): return game.utility(state, player), None
     v, move = float('-inf'), float('-inf')
     for a in game.actions(state):
@@ -57,7 +57,7 @@ def max_value(game: Game, state: State) -> tuple[float, str | None]:
             v, move = v2, a
     return v, move
 
-def min_value(game: Game, state: State) -> tuple[float, str | None]:
+def min_value(game: Game, state: State) -> tuple[float, float | None]:
     if (game.is_terminal(state)): return game.utility(state, player), None
     v, move = float('inf'), float('inf')
     for a in game.actions(state):
