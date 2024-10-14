@@ -42,3 +42,39 @@ class Game:
             print(f'P1\'s utility is {self.utility(state, 0)}')
         else:
             print(f'it is P{self.to_move(state)+1}\'s turn')
+
+def minimax_search(game: Game, state: State) -> Action | None:
+    player = game.to_move(state)
+    value, move = max_value(game, state)
+    return move
+
+def max_value(game: Game, state: State) -> tuple[float, str | None]:
+    if (game.is_terminal(state)): return game.utility(state, player), None
+    v, move = float('-inf'), float('-inf')
+    for a in game.actions(state):
+        v2, a2 = min_value(game, game.result(state, a))
+        if (v2 > v):
+            v, move = v2, a
+    return v, move
+
+def min_value(game: Game, state: State) -> tuple[float, str | None]:
+    if (game.is_terminal(state)): return game.utility(state, player), None
+    v, move = float('inf'), float('inf')
+    for a in game.actions(state):
+        v2, a2 = max_value(game, game.result(state, a))
+        if (v2 < v):
+            v, move = v2, a
+    return v, move
+
+game = Game()
+
+state = game.initial_state()
+game.print(state)
+while not game.is_terminal(state):
+    player = game.to_move(state)
+    action = minimax_search(game, state) # The player whose turn it is
+                                         # is the MAX player
+    print(f'P{player+1}\'s action: {action}')
+    assert action is not None
+    state = game.result(state, action)
+    game.print(state)
