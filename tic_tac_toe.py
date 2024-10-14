@@ -81,7 +81,7 @@ def minimax_search(game: Game, state: State) -> Action | None:
     value, move = max_value(game, state)
     return move
 
-def max_value(game: Game, state: State) -> tuple[float, str | None]:
+def max_value(game: Game, state: State) -> tuple[float, float | None]:
     if (game.is_terminal(state)): return game.utility(state, player), None
     v, move = float('-inf'), float('-inf')
     for a in game.actions(state):
@@ -90,7 +90,7 @@ def max_value(game: Game, state: State) -> tuple[float, str | None]:
             v, move = v2, a
     return v, move
 
-def min_value(game: Game, state: State) -> tuple[float, str | None]:
+def min_value(game: Game, state: State) -> tuple[float, float | None]:
     if (game.is_terminal(state)): return game.utility(state, player), None
     v, move = float('inf'), float('inf')
     for a in game.actions(state):
@@ -99,14 +99,44 @@ def min_value(game: Game, state: State) -> tuple[float, str | None]:
             v, move = v2, a
     return v, move
 
+
+def alpha_beta_search(game: Game, state: State) -> Action:
+    player = game.to_move(state)
+    value, move = max_value_ab(game, state, float('-inf'), float('inf'))
+    return move
+
+
+def max_value_ab(game: Game, state: State, alpha, beta) -> tuple[float, float]:
+    if (game.is_terminal(state)): return game.utility(state, player), None
+    v = float('-inf')
+    for a in game.actions(state):
+        v2, a2 = min_value_ab(game, game.result(state, a), alpha, beta)
+        if (v2 > v):
+            v, move = v2, a
+            alpha = max(alpha, v)
+        if (v >= beta): return v, move
+    return v, move
+
+def min_value_ab(game: Game, state: State, alpha, beta) -> tuple[float, float | None]:
+    if (game.is_terminal(state)): return game.utility(state, player), None
+    v, move = float('inf'), float('inf')
+    for a in game.actions(state):
+        v2, a2 = max_value_ab(game, game.result(state, a), alpha, beta)
+        if (v2 < v):
+            v, move = v2, a
+            beta = min(beta, v)
+        if (v <= alpha): return v, move
+    return v, move
+
 game = Game()
 
 state = game.initial_state()
 game.print(state)
 while not game.is_terminal(state):
     player = game.to_move(state)
-    action = minimax_search(game, state) # The player whose turn it is
+    #action = minimax_search(game, state) # The player whose turn it is
                                          # is the MAX player
+    action = alpha_beta_search(game, state)
     print(f'P{player+1}\'s action: {action}')
     assert action is not None
     state = game.result(state, action)
