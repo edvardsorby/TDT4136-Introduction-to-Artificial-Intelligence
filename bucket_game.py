@@ -44,27 +44,27 @@ class Game:
             print(f'it is P{self.to_move(state)+1}\'s turn')
 
 def minimax_search(game: Game, state: State) -> Action | None:
-    player = game.to_move(state)
-    value, move = max_value(game, state)
-    return move
+    player = game.to_move(state)                                # Get the current player whose turn it is
+    value, move = max_value(game, state)                        # Start the minimax algorithm by finding the maximum value move for the current player
+    return move                                                 # Return the best action (move) found by the minimax search
 
 def max_value(game: Game, state: State) -> tuple[float, float | None]:
-    if (game.is_terminal(state)): return game.utility(state, player), None
-    v, move = float('-inf'), float('-inf')
-    for a in game.actions(state):
-        v2, a2 = min_value(game, game.result(state, a))
-        if (v2 > v):
-            v, move = v2, a
-    return v, move
+    if (game.is_terminal(state)): return game.utility(state, player), None  # Check if the game is in a terminal state (i.e., if the game has ended), return the utility of the current state for the player
+    v, move = float('-inf'), float('-inf')                                  # Initialize v as negative infinity because we are looking for the maximum value and initialize 'move' as negative infinity, will be updated with the best action
+    for a in game.actions(state):                                           # Loop over all possible actions that can be taken from the current state
+        v2, a2 = min_value(game, game.result(state, a))                     # Get the value of the resulting state after Player 2 (minimizer) takes their action
+        if (v2 > v):                                                        # If the value found (v2) is better than the current best (v), update v and the move
+            v, move = v2, a                                                 # Keep track of the best value and associated action
+    return v, move                                                          # Return the highest value found (v) and the corresponding best action (move)
 
 def min_value(game: Game, state: State) -> tuple[float, float | None]:
-    if (game.is_terminal(state)): return game.utility(state, player), None
-    v, move = float('inf'), float('inf')
-    for a in game.actions(state):
-        v2, a2 = max_value(game, game.result(state, a))
-        if (v2 < v):
-            v, move = v2, a
-    return v, move
+    if (game.is_terminal(state)): return game.utility(state, player), None  # Check if the game is in a terminal state (i.e., if the game has ended), return the utility of the current state for the player
+    v, move = float('inf'), float('inf')                                    # Initialize v as negative infinity because we are looking for the maximum value and initialize 'move' as negative infinity, will be updated with the best action
+    for a in game.actions(state):                                           # Loop over all possible actions that can be taken from the current state
+        v2, a2 = max_value(game, game.result(state, a))                     # Get the value of the resulting state after Player 1 (maximizer) takes their action
+        if (v2 < v):                                                        # If the value found (v2) is better (lower) than the current best (v), update v and the move
+            v, move = v2, a                                                 # Keep track of the best (smallest) value and associated action
+    return v, move                                                          # Return the lowest value found (v) and the corresponding best action (move)
 
 game = Game()
 
