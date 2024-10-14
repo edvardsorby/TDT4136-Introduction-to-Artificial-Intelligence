@@ -127,21 +127,21 @@ def min_value_ab(game: Game, state: State, alpha, beta) -> tuple[float, float | 
         if (v <= alpha): return v, move                                     # Alpha cutoff: if v is less than or equal to alpha, we can prune the remaining branches. Return immediately because further exploration is unnecessary (pruning occurs)
     return v, move                                                          # Return the lowest value found (v) and the corresponding best action (move)
 
-start_time = time.time()
-
 game = Game()
 
 state = game.initial_state()
 game.print(state)
 while not game.is_terminal(state):
     player = game.to_move(state)
+
+    start_time = time.time()
     #action = minimax_search(game, state) # The player whose turn it is
                                          # is the MAX player
     action = alpha_beta_search(game, state)
+    end_time = time.time()
+    print(f'Move runtime: {end_time-start_time} s')
+    
     print(f'P{player+1}\'s action: {action}')
     assert action is not None
     state = game.result(state, action)
     game.print(state)
-
-end_time = time.time()
-print(f'Runtime: {end_time-start_time} s')
