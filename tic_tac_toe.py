@@ -1,4 +1,5 @@
 from copy import deepcopy
+import time
 
 State = tuple[int, list[list[int | None]]]  # Tuple of player (whose turn it is),
                                             # and board
@@ -128,6 +129,8 @@ def min_value_ab(game: Game, state: State, alpha, beta) -> tuple[float, float | 
         if (v <= alpha): return v, move
     return v, move
 
+start_time = time.time()
+
 game = Game()
 
 state = game.initial_state()
@@ -141,3 +144,6 @@ while not game.is_terminal(state):
     assert action is not None
     state = game.result(state, action)
     game.print(state)
+
+end_time = time.time()
+print(f'Runtime: {end_time-start_time} s')
